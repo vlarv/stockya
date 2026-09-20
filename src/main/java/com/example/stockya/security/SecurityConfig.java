@@ -43,6 +43,8 @@ public class SecurityConfig {
                         .requestMatchers("/categorias/**", "/productos/**").hasRole(ADMIN)
                         // Movimientos: ambos roles; la pertenencia se valida en el service
                         .requestMatchers("/movimientos/**").hasAnyRole(ADMIN, ALMACENERO)
+                        // Gestión de usuarios: solo el administrador
+                        .requestMatchers("/usuarios/**").hasRole(ADMIN)
                         .anyRequest().denyAll())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
