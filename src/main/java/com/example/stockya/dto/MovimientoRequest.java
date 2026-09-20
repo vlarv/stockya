@@ -16,10 +16,6 @@ public class MovimientoRequest {
     @NotNull(message = "El tipo de movimiento es obligatorio")
     private Integer tipoMovimientoId;
 
-    // Temporal: cuando exista el login se tomará del usuario autenticado
-    @NotNull(message = "El responsable es obligatorio")
-    private Integer responsableId;
-
     @Size(max = 100, message = "La referencia externa no puede superar 100 caracteres")
     private String referenciaExterna;
 

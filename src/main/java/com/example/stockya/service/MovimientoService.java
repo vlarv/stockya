@@ -11,7 +11,10 @@ import com.example.stockya.entity.Producto;
 import com.example.stockya.entity.TipoMovimiento;
 import com.example.stockya.entity.Usuario;
 import com.example.stockya.exception.ConflictException;
+import com.example.stockya.exception.ForbiddenException;
 import com.example.stockya.exception.NotFoundException;
+import com.example.stockya.security.AuthUser;
+import com.example.stockya.security.CurrentUser;
 import com.example.stockya.mapper.MovimientoMapper;
 import com.example.stockya.repository.MovimientoDetalleRepository;
 import com.example.stockya.repository.MovimientoRepository;
@@ -48,19 +51,25 @@ public class MovimientoService {
 
     @Transactional(readOnly = true)
     public List<MovimientoResponse> findAll() {
-        return movimientoRepository.findAll().stream().map(this::toResponse).toList();
+        AuthUser user = CurrentUser.get();
+        List<Movimiento> movimientos = user.isAdministrador()
+                ? movimientoRepository.findAll()
+                : movimientoRepository.findByResponsableId(user.id());
+        return movimientos.stream().map(this::toResponse).toList();
     }
 
     @Transactional(readOnly = true)
     public MovimientoResponse getById(Integer id) {
-        return toResponse(find(id));
+        return toResponse(findOwned(id));
     }
 
     public MovimientoResponse create(MovimientoRequest req) {
         TipoMovimiento tipo = tipoRepository.findById(req.getTipoMovimientoId())
                 .orElseThrow(() -> new NotFoundException("Tipo de movimiento " + req.getTipoMovimientoId() + " no encontrado"));
-        Usuario responsable = usuarioRepository.findById(req.getResponsableId())
-                .orElseThrow(() -> new NotFoundException("Usuario " + req.getResponsableId() + " no encontrado"));
+        // El responsable es siempre el usuario autenticado
+        Integer usuarioId = CurrentUser.get().id();
+        Usuario responsable = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new NotFoundException("Usuario " + usuarioId + " no encontrado"));
 
         // Suma las cantidades por producto (un producto puede repetirse en varias líneas).
         // TreeMap: se bloquea siempre en el mismo orden para evitar deadlocks.
@@ -105,13 +114,13 @@ public class MovimientoService {
     }
 
     public MovimientoResponse update(Integer id, MovimientoUpdateRequest req) {
-        Movimiento movimiento = find(id);
+        Movimiento movimiento = findOwned(id);
         mapper.update(req, movimiento);
         return toResponse(movimientoRepository.save(movimiento));
     }
 
     public void delete(Integer id) {
-        Movimiento movimiento = find(id);
+        Movimiento movimiento = findOwned(id);
         try {
             // El trigger revierte el stock al borrar cada detalle
             detalleRepository.deleteAll(detalleRepository.findByMovimientoId(id));
@@ -126,6 +135,16 @@ public class MovimientoService {
     private Movimiento find(Integer id) {
         return movimientoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Movimiento " + id + " no encontrado"));
+    }
+
+    /** Pertenencia: el administrador accede a todo; los demás solo a sus propios movimientos. */
+    private Movimiento findOwned(Integer id) {
+        Movimiento movimiento = find(id);
+        AuthUser user = CurrentUser.get();
+        if (!user.isAdministrador() && !movimiento.getResponsable().getId().equals(user.id())) {
+            throw new ForbiddenException("No tienes acceso a este movimiento");
+        }
+        return movimiento;
     }
 
     private MovimientoResponse toResponse(Movimiento movimiento) {

@@ -15,6 +15,7 @@ java {
 
 val mapstructVersion = "1.7.0.Beta1"
 val lombokMapstructBindingVersion = "0.2.0"
+val jwtVersion = "0.13.0"
 
 repositories {
 	mavenCentral()
@@ -29,6 +30,10 @@ dependencies {
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("io.jsonwebtoken:jjwt-api:${jwtVersion}")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:${jwtVersion}")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:${jwtVersion}")
 	implementation("org.mapstruct:mapstruct:${mapstructVersion}")
 	annotationProcessor("org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}")
 	annotationProcessor("org.mapstruct:mapstruct-processor:${mapstructVersion}")
