@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "movimientos")
 @Getter
@@ -14,12 +16,20 @@ public class Movimiento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true, length = 100)
-    private String tipo;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "tipo_movimiento_id", nullable = false)
+    private TipoMovimiento tipoMovimiento;
 
-    @Column(nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "responsable_id", nullable = false)
+    private Usuario responsable;
+
+    @Column(name = "referencia_externa", length = 100)
+    private String referenciaExterna;
+
+    @Column(insertable = false, updatable = false)
     private LocalDateTime fecha;
 
-     @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String observaciones;
 }

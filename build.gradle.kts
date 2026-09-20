@@ -13,6 +13,9 @@ java {
 	}
 }
 
+val mapstructVersion = "1.7.0.Beta1"
+val lombokMapstructBindingVersion = "0.2.0"
+
 repositories {
 	mavenCentral()
 }
@@ -26,6 +29,9 @@ dependencies {
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
+	implementation("org.mapstruct:mapstruct:${mapstructVersion}")
+	annotationProcessor("org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}")
+	annotationProcessor("org.mapstruct:mapstruct-processor:${mapstructVersion}")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
