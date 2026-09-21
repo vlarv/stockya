@@ -22,7 +22,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest req) {
         // Mismo mensaje para email inexistente y contraseña incorrecta
-        Usuario usuario = usuarioRepository.findByEmail(req.getEmail())
+        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(req.getEmail())
                 .filter(u -> passwordEncoder.matches(req.getPassword(), u.getPassword()))
                 .orElseThrow(() -> new UnauthorizedException("Credenciales inválidas"));
         return new LoginResponse(
