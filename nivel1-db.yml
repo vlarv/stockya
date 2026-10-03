@@ -1,0 +1,24 @@
+#nivel1-db.yml
+# NIVEL 1 · Solo la base de datos (PostgreSQL 16)
+# Uso:  docker compose -f nivel1-db.yml up -d
+# En tu PC corres: backend y frontend
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: stockya_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5433:5432"        # para conectarte desde tu PC (backend local, DBeaver, pgAdmin)
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d stockya_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+ 
+volumes:
+  db_data:
