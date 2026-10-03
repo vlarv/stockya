@@ -38,6 +38,7 @@ public class SecurityConfig {
                         // Ruta interna de Spring para enviar errores; sin esto un 403 se convierte en 401
                         .requestMatchers("/error").permitAll()
                         // Catálogos: ambos roles consultan, solo el administrador modifica
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/categorias/**", "/productos/**", "/tipos-movimiento/**")
                                 .hasAnyRole(ADMIN, ALMACENERO)
                         .requestMatchers("/categorias/**", "/productos/**").hasRole(ADMIN)
