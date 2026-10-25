@@ -1,5 +1,6 @@
 {
   "rewrites": [
+<<<<<<< HEAD
     {
       "source": "/api/:path*",
       "destination": "https://stockya-vys0.onrender.com/:path*"
@@ -10,3 +11,9 @@
     }
   ]
 }
+=======
+    { "source": "/api/:path*", "destination": "https://stockya-vys0.onrender.com/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+>>>>>>> f845e3d (feat(frontend): agrega página 404 para rutas no encontradas)

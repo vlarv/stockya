@@ -92,6 +92,16 @@ tr.row-danger td { background: #fef2f2; }
 .login-card .brand { color: var(--sidebar); margin-bottom: .25rem; }
 .login-card .brand span { color: var(--primary); }
 
+/* Página 404 */
+.notfound { display: grid; place-items: center; padding: 2rem 0; }
+.notfound-full { min-height: 100vh; padding: 1rem; background: linear-gradient(135deg, #0f2a2e, #0f766e); }
+.notfound-card { width: 100%; max-width: 440px; text-align: center; padding: 2rem 1.5rem; }
+.notfound-icon { font-size: 3rem; }
+.notfound-code { font-size: 5rem; font-weight: 800; line-height: 1; color: var(--primary); letter-spacing: .05em; }
+.notfound-card h1 { margin: .5rem 0; }
+.notfound-actions { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; margin-top: 1.25rem; }
+.notfound-actions .btn { text-decoration: none; }
+
 /* Movimientos: líneas del formulario */
 .linea { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: .5rem; align-items: start; margin-bottom: .6rem; }
 .linea .hint { grid-column: 1 / -1; font-size: .78rem; color: var(--muted); margin-top: -.3rem; }
